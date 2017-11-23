@@ -9,9 +9,7 @@ kramdown:
     - footnotes
     - smart
   use_coderay: true
-  syntax_highlighter: rouge
-  coderay:
-    coderay_line_numbers:  inline
+
 
 
 paginate: 10

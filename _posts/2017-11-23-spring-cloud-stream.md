@@ -1,13 +1,12 @@
 ---
 title: Spring Cloud Stream
-tags: 'spring cloud' 'spring cloud stream'
+tags: "spring cloud" "spring cloud stream"
 categories: MQ
 ---
 * TOC
 {:toc}
 
 
-====
 ### 绑定器
 通过定义绑定器作为中间层，实现了应用程序与消息中间件细节之间的隔离。通过向应用程序暴露统一的Channel通过，是的应用程序不需要再考虑各种不同的消息中间件的实现。当需要升级消息中间件，或者是更换其他消息中间件产品时，我们需要做的就是更换对应的Binder绑定器而不需要修改任何应用逻辑 。
 

@@ -1,7 +1,7 @@
 ---
 title: Spring Cloud Stream
 tags: ["spring cloud","spring cloud stream"]
-categories: MQ
+categories: ["MQ","spring cloud"]
 ---
 * TOC
 {:toc}

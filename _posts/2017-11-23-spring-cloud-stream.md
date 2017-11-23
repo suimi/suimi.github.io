@@ -28,9 +28,9 @@ spring.cloud.stream.instanceIndex=1
 ```
 - RabbitMq 分区后，会根据对应的分区index创建queue. eg:`<exchange>.<group>-index`,
 
-![queue](../static/img/queue.png)
+![queue](img/queue.png)
 
-![exchange](../static/img/exchange.png)
+![exchange](img/exchange.png)
 
 消息发送日志:
 ```

@@ -26,6 +26,7 @@ spring.cloud.stream.instanceCount=2
 #实例索引
 spring.cloud.stream.instanceIndex=1
 ```
+
 - RabbitMq 分区后，会根据对应的分区index创建queue. eg:`<exchange>.<group>-index`,
 
 ![queue](img/queue.png)
@@ -39,7 +40,9 @@ RabbitTemplate      : Publishing message on exchange [stream], routingKey = [str
 RabbitTemplate      : Publishing message on exchange [stream], routingKey = [stream-0]
 RabbitTemplate      : Publishing message on exchange [stream], routingKey = [stream-0]
 ```
+
 - RabbitMq分区并配置routingKey. 对于设置了routingKey的情形，在消息发送时routingKey将变为`<routingKey>-index`,消费者在绑定时的routingKey变为`<routingKey>-index`
+
 生产者配置：
 ```
 # bug: 当前版本对bindingRoutingKey不生效,2.0应该生效
@@ -50,6 +53,7 @@ RabbitTemplate      : Publishing message on exchange [stream], routingKey = [str
 #spring.cloud.stream.rabbit.bindings.<channel>.producer.requiredGroups= sca
  spring.cloud.stream.rabbit.bindings.<channel>.producer.routingKeyExpression= "'test.all'"
 ```
+
 发送日志：
 ```
 RabbitTemplate      : Publishing message on exchange [stream], routingKey = [test.all-1]
@@ -57,11 +61,13 @@ RabbitTemplate      : Publishing message on exchange [stream], routingKey = [tes
 RabbitTemplate      : Publishing message on exchange [stream], routingKey = [test.all-0]
 RabbitTemplate      : Publishing message on exchange [stream], routingKey = [test.all-0]
 ```
+
 消费者配置：
 ```
 spring.cloud.stream.rabbit.bindings.<channel>.consumer.bindQueue=true
 spring.cloud.stream.rabbit.bindings.<channel>.consumer.bindingRoutingKey=test.#
 ```
+
 但发现不行,对于test.#-1这样绑定了topic的queue好像收不到消息，需要指定明确的路由，不支持模糊匹配.这个应该是rabbitMq无法支持test.#-1这样的绑定，如果是test.#.-1这样应该就支持了
 
 #### 生产者分区

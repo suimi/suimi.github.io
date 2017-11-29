@@ -125,7 +125,7 @@ categories: ["MQ","spring cloud"]
 
 ## 构建
 
- 构建过程与Data Flow Server一致,不同在于添加`@EnableDataFlowShell`注解,不需要配置redis
+构建过程与Data Flow Server一致,不同在于添加`@EnableDataFlowShell`注解,不需要配置redis
 
 ```java
  @SpringBootApplication
@@ -173,7 +173,9 @@ dataflow:> config server http://localhost:9393
 
 ## 注册 stream app
 
-- 注册格式:`app register --name <app name> --type <type> --uri maven://<groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>`
+- 注册格式:
+
+    `app register --name <app name> --type <type> --uri maven://<groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>`
 
     `type` 支持 `source`,`processor`,`sink`,`task`
 
@@ -182,6 +184,17 @@ dataflow:> config server http://localhost:9393
     app register --name "processor" --type processor --uri maven://com.suimi.hello:dataflow-streams-processor:0.0.1-SNAPSHOT
     app register --name "sink" --type sink --uri maven://com.suimi.hello:dataflow-streams-sink:0.0.1-SNAPSHOT
     ```
+- properties方式注册
+
+    如果想一次行注册多个app,可以把app都写入一个properties文件, `key` 格式为`<type>.<name>`, `value` 为url。*eg: stream-apps.properties*
+    ```
+    source.source= maven://com.suimi.hello:dataflow-streams-source:0.0.1-SNAPSHOT
+    processor.processor=maven://com.suimi.hello:dataflow-streams-processor:0.0.1-SNAPSHOT
+    sink.sink= maven://com.suimi.hello:dataflow-streams-sink:0.0.1-SNAPSHOT
+    ```
+    然后使用`app import`命令来注册所有app
+
+    `app import --uri file:///<YOUR_FILE_LOCATION>/stream-apps.properties`
 
 - 查看注册列表 app list
 
@@ -199,13 +212,21 @@ Stream DSL描述了数据流在系统中流转过程的线性序列。
 
 部署成功后可在server看到具体部署信息及各app日志路径,根据该路径查看具体app日志信息.
 
+# Task
 
+1. 创建任务
 
-```
-app register --name "task" --type task --uri maven://com.suimi.hello:dataflow-task:0.0.1-SNAPSHOT
-task create myjob --difination task
-task launch myjob
+2. 注册 app
 
-```
+    注册方式与stream app注册相同. `app register --name "task" --type task --uri maven://com.suimi.hello:dataflow-task:0.0.1-SNAPSHOT
+`
+3. 创建任务
 
-[github source](https://github.com/suimi/hello-mq/tree/master/data-flow)
+    `task create myjob --difination task`
+4. 运行任务
+    `task launch myjob`
+
+5. 查看任务执行记录
+    `task execution list`
+
+[source code](https://github.com/suimi/hello-mq/tree/master/data-flow)

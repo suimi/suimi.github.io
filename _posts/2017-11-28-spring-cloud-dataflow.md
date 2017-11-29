@@ -148,6 +148,7 @@ dataflow:> config server http://localhost:9393
 ## 创建source、processor、sink
 创建过程与Data Flow Server一致,不同在于绑定各自channel,增加cloud stream依赖及配置
 1. pom.xml
+
 ```
  <dependency>
     <groupId>org.springframework.cloud</groupId>
@@ -155,6 +156,7 @@ dataflow:> config server http://localhost:9393
 </dependency>
 ```
 2. rabbitmq 配置
+
 ```
 spring:
   rabbitmq:
@@ -165,16 +167,20 @@ spring:
 ```
 
 ## 注册 stream app
+
 - 注册格式:`app register --name <app name> --type <type> --uri maven://<groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>`
 
     `type` 支持 `source`,`processor`,`sink`,`task`
+
 ```
 app register --name "source" --type source --uri maven://com.suimi.hello:dataflow-streams-source:0.0.1-SNAPSHOT
 app register --name "processor" --type processor --uri maven://com.suimi.hello:dataflow-streams-processor:0.0.1-SNAPSHOT
 app register --name "sink" --type sink --uri maven://com.suimi.hello:dataflow-streams-sink:0.0.1-SNAPSHOT
 ```
 - 查看注册列表 app list
+
 # 创建 stream 并部署
+
 Stream DSL描述了数据流在系统中流转过程的线性序列。
 
 例如，stream definition 为`http |transformer | cassandra`，每个管道符号连接应用程序的左右两边。命名通道可用于路由和将数据分发到多个消息传递目的地。

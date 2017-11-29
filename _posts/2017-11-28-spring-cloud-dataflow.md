@@ -140,6 +140,7 @@ categories: ["MQ","spring cloud"]
 ## 启动shell, 配置server
 
 在同一机器的情况下不需要配置，其他情况可采用下面方式配置：
+
 ```shell
 dataflow:> config server http://localhost:9393
 ```
@@ -152,23 +153,23 @@ dataflow:> config server http://localhost:9393
 
 1. pom.xml
 
-```
- <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
-</dependency>
-```
+    ```
+     <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
+    </dependency>
+    ```
 
 2. rabbitmq 配置
 
-```
-spring:
-  rabbitmq:
-    host: 192.168.6.164
-    port: 5672
-    username: user
-    password: pwd
-```
+    ```
+    spring:
+      rabbitmq:
+        host: 192.168.6.164
+        port: 5672
+        username: user
+        password: pwd
+    ```
 
 ## 注册 stream app
 
@@ -176,11 +177,11 @@ spring:
 
     `type` 支持 `source`,`processor`,`sink`,`task`
 
-```
-app register --name "source" --type source --uri maven://com.suimi.hello:dataflow-streams-source:0.0.1-SNAPSHOT
-app register --name "processor" --type processor --uri maven://com.suimi.hello:dataflow-streams-processor:0.0.1-SNAPSHOT
-app register --name "sink" --type sink --uri maven://com.suimi.hello:dataflow-streams-sink:0.0.1-SNAPSHOT
-```
+    ```
+    app register --name "source" --type source --uri maven://com.suimi.hello:dataflow-streams-source:0.0.1-SNAPSHOT
+    app register --name "processor" --type processor --uri maven://com.suimi.hello:dataflow-streams-processor:0.0.1-SNAPSHOT
+    app register --name "sink" --type sink --uri maven://com.suimi.hello:dataflow-streams-sink:0.0.1-SNAPSHOT
+    ```
 
 - 查看注册列表 app list
 

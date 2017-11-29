@@ -13,6 +13,7 @@ categories: ["MQ","spring cloud"]
 - rabbitmq
 - maven
 - spring cloud dataflow
+
 ```xml
 <dependency>
     <groupId>org.springframework.cloud</groupId>
@@ -29,7 +30,9 @@ categories: ["MQ","spring cloud"]
     <scope>import</scope>
 </dependency>
 ```
+
 # Data flow server
+
 1. pom.xml
 
 ```xml
@@ -52,6 +55,7 @@ public class DataflowServerLocalApplication {
 }
 
 ```
+
 3. redis配置
 
 ```
@@ -116,9 +120,13 @@ SPRING_APPLICATION_JSON='{
 }'
 ```
 - maven 的 localrepository 默认配置为`${user.home}/.m2/repository/`
+
 # Data flow shell
+
 ## 构建
+
  构建过程与Data Flow Server一致,不同在于添加`@EnableDataFlowShell`注解,不需要配置redis
+
 ```java
  @SpringBootApplication
  @EnableDataFlowShell

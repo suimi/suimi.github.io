@@ -1,5 +1,5 @@
 ---
-title: java 并发类
+title: ReentrantLock
 tags: ReentrantLock
 categories: 并发编程
 ---

@@ -6,7 +6,7 @@ categories: 并发编程
 * TOC
 {:toc}
 
-![ReentrantLock](.2017-12-04-map_images\ReentrantLock.png)
+![ReentrantLock](/static/img/ReentrantLock.png)
 
 # LockSupport
 LockSupport是用来创建锁和其他同步类的基本线程阻塞原语。

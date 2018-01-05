@@ -1,43 +1,45 @@
-permalink: /:year-:month-:day/:title/
-plugins: [jekyll-paginate]
-highlighter: rouge
+# Site settings
+title: suimi
+email: isuimi@aliyun.com
+description: > # this means to ignore newlines until "baseurl:"
+  现在也不晚
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: http://isuimi.com # the base hostname & protocol for your site
+rss_url: /pages/feed.xml
+author: suimi
+
+# Sidebar filter
+# Choose 'tag' or 'category' as filter in sidebar.
+filter: 'category'
+recent_num: 20
+
+# Social account
+github: suimi
+
+# avatar and Favicon
+avatar: http://img3.duitang.com/uploads/item/201607/15/20160715061505_dfTiY.thumb.224_0.jpeg
+#favicon: https://b-ssl.duitang.com/uploads/item/201607/15/20160715061505_dfTiY.thumb.700_0.jpeg
+
+# disqus config
+disqus:
+  shortname: suyan-zh
+
+# google analytics config
+#ga:
+#  id: UA-54767140-1
+#  url: yansu.org
+
+# Build settings
+permalink: /:year/:month/:day/:title.html
 markdown: kramdown
-kramdown:
-  input: GFM
-  extensions:
-    - autolink
-    - footnotes
-    - smart
-  use_coderay: true
+highlighter: rouge
+sass:
+  style: compressed
 
-
-
-paginate: 10
-paginate_path: ":num"
-baseurl: ""
-
-
-
-defaults:
-  -
-    scope:
-      path: ""
-      type: "posts"
-    values:
-      layout: post
-      styles : [highlight.css,post.css]
-      scripts : [post.js]
-
-
-
-title: "suimi"
-email:
-description: "现在也不晚"
-github_username:  "suimi"
-disqus_shortname: "suimi"
-
-
-
-url: "http://suimi.github.io"
-imgrepo: "http://suimi.github.io/static/img"
+# Jekyll Plugin
+# https://help.github.com/articles/adding-jekyll-plugins-to-a-github-pages-site/
+gems:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-feed
 

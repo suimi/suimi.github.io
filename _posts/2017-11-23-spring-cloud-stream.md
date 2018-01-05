@@ -1,4 +1,5 @@
 ---
+layout: post
 title: Spring Cloud Stream
 tags: ["spring cloud","spring cloud stream"]
 categories: ["MQ","spring cloud"]

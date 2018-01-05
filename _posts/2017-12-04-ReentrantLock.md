@@ -1,4 +1,5 @@
 ---
+layout: post
 title: ReentrantLock
 tags: ReentrantLock
 categories: 并发编程
@@ -25,8 +26,7 @@ ReentrantLock是一个可重入的互斥锁，又被称为“独占锁”。
 
 ## 过程分析
 
-```
-
+```java
 // 仓库
 class Depot {
     private int capacity;    // 仓库的容量

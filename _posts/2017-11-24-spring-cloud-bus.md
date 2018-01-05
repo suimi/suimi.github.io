@@ -69,7 +69,7 @@ categories: ["MQ","spring cloud"]
 4. 消息监听.
     - 如果是ack事件并且bus.trace开启且是自己发布的事件,发布该事件
     - 如果是目标是自己,发布刷新事件，有`RefreshListener`做刷新处理,参见事件监听
-    ```
+    ```java
     class BusAutoConfiguration
     @StreamListener(SpringCloudBusClient.INPUT)
         public void acceptRemote(RemoteApplicationEvent event) {

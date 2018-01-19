@@ -22,7 +22,7 @@ avatar: http://isuimi.com/static/img/avatar.jpg
 
 # disqus config
 disqus:
-  shortname: suyan-zh
+  shortname: suimi
 
 # google analytics config
 #ga:

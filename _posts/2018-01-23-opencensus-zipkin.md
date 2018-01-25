@@ -81,7 +81,8 @@ categories: 监控
 
 ## 源码解析
 ### 初始化过程
-1. TraceComponent初始化,Tracing初始化时就会创建静态常量对象`traceComponent`,默认实例为`TraceComponentImpl`,不能存在时`io.opencensus.impllite.trace.TraceComponentImplLite`
+1. TraceComponent初始化,Tracing初始化时就会创建静态常量对象`traceComponent`,默认实例为`TraceComponentImpl`,不能存在时`TraceComponentImplLite`
+
 ``` java
 public final class Tracing {
   private static final Logger logger = Logger.getLogger(Tracing.class.getName());
@@ -146,7 +147,8 @@ public TraceComponentImplBase(Clock clock, RandomHandler randomHandler, EventQue
   }
 ```
 3. export组件
-```
+
+```java
 public final class ExportComponentImpl extends ExportComponent {
 
   public static ExportComponentImpl createWithInProcessStores(EventQueue eventQueue) {
@@ -175,7 +177,7 @@ public final class ExportComponentImpl extends ExportComponent {
 
 4. **SpanExporter**
    SpanExporter是工作的核心，初始化时开启worker线程，检查span列表并以批次方式导出数据
-```
+```java
 private SpanExporterImpl(Worker worker) {
     this.workerThread =
         new DaemonThreadFactory("ExportComponent.ServiceExporterThread").newThread(worker);

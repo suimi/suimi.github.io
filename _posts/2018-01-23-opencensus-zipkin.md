@@ -80,7 +80,8 @@ categories: 监控
  注意事项：如果需要发送到zipkin，需要`setRecordEvents(true)`同时`setSampler(Samplers.alwaysSample())`
 
 ## 源码解析
-    整体而言采用开源的并发框架Disruptor,在性能上优于zipkin自身提供的 reporter
+整体而言采用开源的并发框架 Disruptor,在性能上优于zipkin自身提供的 reporter
+
 ### 初始化过程
 1. TraceComponent初始化,Tracing初始化时就会创建静态常量对象`traceComponent`,默认实例为`TraceComponentImpl`,不能存在时`TraceComponentImplLite`
 
@@ -359,125 +360,125 @@ zipkin 原生reporter同样是采用缓存分组发送机制，存储同样采�
 
 2. 异步Reporter `AsyncReporter`
 
-```java
-public abstract class AsyncReporter<S> implements Reporter<S>, Flushable, Component {
-    /** Builds an async reporter that encodes zipkin spans as they are reported. */
-    public AsyncReporter<Span> build() {
-      switch (sender.encoding()) {
-        case JSON:
-          return build(Encoder.JSON);
-        case THRIFT:
-          return build(Encoder.THRIFT);
-        default:
-          throw new UnsupportedOperationException(sender.encoding().name());
-      }
-    }
+    ```java
+    public abstract class AsyncReporter<S> implements Reporter<S>, Flushable, Component {
+        /** Builds an async reporter that encodes zipkin spans as they are reported. */
+        public AsyncReporter<Span> build() {
+          switch (sender.encoding()) {
+            case JSON:
+              return build(Encoder.JSON);
+            case THRIFT:
+              return build(Encoder.THRIFT);
+            default:
+              throw new UnsupportedOperationException(sender.encoding().name());
+          }
+        }
 
-    /** Builds an async reporter that encodes arbitrary spans as they are reported. */
-    public <S> AsyncReporter<S> build(Encoder<S> encoder) {
-      checkNotNull(encoder, "encoder");
-      checkArgument(encoder.encoding() == sender.encoding(),
-          "Encoder.encoding() %s != Sender.encoding() %s",
-          encoder.encoding(), sender.encoding());
+        /** Builds an async reporter that encodes arbitrary spans as they are reported. */
+        public <S> AsyncReporter<S> build(Encoder<S> encoder) {
+          checkNotNull(encoder, "encoder");
+          checkArgument(encoder.encoding() == sender.encoding(),
+              "Encoder.encoding() %s != Sender.encoding() %s",
+              encoder.encoding(), sender.encoding());
 
-      // 异步Reporter
-      final BoundedAsyncReporter<S> result = new BoundedAsyncReporter<>(this, encoder);
+          // 异步Reporter
+          final BoundedAsyncReporter<S> result = new BoundedAsyncReporter<>(this, encoder);
 
-      if (messageTimeoutNanos > 0) { // Start a thread that flushes the queue in a loop.
-        final BufferNextMessage consumer =
-            new BufferNextMessage(sender, messageMaxBytes, messageTimeoutNanos);
-        final Thread flushThread = new Thread(() -> {
-          try {
-            while (!result.closed.get()) {
-              result.flush(consumer);
+          if (messageTimeoutNanos > 0) { // Start a thread that flushes the queue in a loop.
+            final BufferNextMessage consumer =
+                new BufferNextMessage(sender, messageMaxBytes, messageTimeoutNanos);
+            final Thread flushThread = new Thread(() -> {
+              try {
+                while (!result.closed.get()) {
+                  result.flush(consumer);
+                }
+              } finally {
+                for (byte[] next : consumer.drain()) result.pending.offer(next);
+                result.close.countDown();
+              }
+            }, "AsyncReporter(" + sender + ")");
+            flushThread.setDaemon(true);
+            //启动线程，异步发送span
+            flushThread.start();
+          }
+          return result;
+        }
+
+        static final class BoundedAsyncReporter<S> extends AsyncReporter<S> {
+            static final Logger logger = Logger.getLogger(BoundedAsyncReporter.class.getName());
+            final AtomicBoolean closed = new AtomicBoolean(false);
+            final Encoder<S> encoder;
+            final ByteBoundedQueue pending;
+            final Sender sender;
+            final int messageMaxBytes;
+            final long messageTimeoutNanos;
+            final CountDownLatch close;
+            final ReporterMetrics metrics;
+
+            BoundedAsyncReporter(Builder builder, Encoder<S> encoder) {
+
+              //有界队列，是一个多生产者，多消费者队列
+              this.pending = new ByteBoundedQueue(builder.queuedMaxSpans, builder.queuedMaxBytes);
+              this.sender = builder.sender;
+              this.messageMaxBytes = builder.messageMaxBytes;
+              this.messageTimeoutNanos = builder.messageTimeoutNanos;
+              this.close = new CountDownLatch(builder.messageTimeoutNanos > 0 ? 1 : 0);
+              this.metrics = builder.metrics;
+              this.encoder = encoder;
             }
-          } finally {
-            for (byte[] next : consumer.drain()) result.pending.offer(next);
-            result.close.countDown();
-          }
-        }, "AsyncReporter(" + sender + ")");
-        flushThread.setDaemon(true);
-        //启动线程，异步发送span
-        flushThread.start();
+
+            /** Returns true if the was encoded and accepted onto the queue. */
+            //接收span,编码并放入队列
+            @Override
+            public void report(S span) {
+              checkNotNull(span, "span");
+              metrics.incrementSpans(1);
+              byte[] next = encoder.encode(span);
+              int messageSizeOfNextSpan = sender.messageSizeInBytes(Collections.singletonList(next));
+              metrics.incrementSpanBytes(next.length);
+              if (closed.get() ||
+                  // don't enqueue something larger than we can drain
+                  messageSizeOfNextSpan > messageMaxBytes ||
+                  !pending.offer(next)) {
+                metrics.incrementSpansDropped(1);
+              }
+            }
+
+            @Override
+            public final void flush() {
+              flush(new BufferNextMessage(sender, messageMaxBytes, 0));
+            }
+            //刷新队列，读取队列所有span放入 message buffer,并发送
+            void flush(BufferNextMessage bundler) {
+              if (closed.get()) throw new IllegalStateException("closed");
+             // 这里读取队列消息到bundler做了一次buffer.add()操作
+              pending.drainTo(bundler, bundler.remainingNanos());
+
+              // record after flushing reduces the amount of gauge events vs on doing this on report
+              metrics.updateQueuedSpans(pending.count);
+              metrics.updateQueuedBytes(pending.sizeInBytes);
+
+              if (!bundler.isReady()) return; // try to fill up the bundle
+
+              // Signal that we are about to send a message of a known size in bytes
+              metrics.incrementMessages();
+              metrics.incrementMessageBytes(bundler.sizeInBytes());
+              //获取下一组数据，并清空buffer，这里有一定开销
+              List<byte[]> nextMessage = bundler.drain();
+
+              // In failure case, we increment messages and spans dropped.
+              Callback failureCallback = sendSpansCallback(nextMessage.size());
+              try {
+                sender.sendSpans(nextMessage, failureCallback);
+              } catch (RuntimeException e) {
+                failureCallback.onError(e);
+                // Raise in case the sender was closed out-of-band.
+                if (e instanceof IllegalStateException) throw e;
+              }
+            }
       }
-      return result;
     }
-
-    static final class BoundedAsyncReporter<S> extends AsyncReporter<S> {
-        static final Logger logger = Logger.getLogger(BoundedAsyncReporter.class.getName());
-        final AtomicBoolean closed = new AtomicBoolean(false);
-        final Encoder<S> encoder;
-        final ByteBoundedQueue pending;
-        final Sender sender;
-        final int messageMaxBytes;
-        final long messageTimeoutNanos;
-        final CountDownLatch close;
-        final ReporterMetrics metrics;
-
-        BoundedAsyncReporter(Builder builder, Encoder<S> encoder) {
-
-          //有界队列，是一个多生产者，多消费者队列
-          this.pending = new ByteBoundedQueue(builder.queuedMaxSpans, builder.queuedMaxBytes);
-          this.sender = builder.sender;
-          this.messageMaxBytes = builder.messageMaxBytes;
-          this.messageTimeoutNanos = builder.messageTimeoutNanos;
-          this.close = new CountDownLatch(builder.messageTimeoutNanos > 0 ? 1 : 0);
-          this.metrics = builder.metrics;
-          this.encoder = encoder;
-        }
-
-        /** Returns true if the was encoded and accepted onto the queue. */
-        //接收span,编码并放入队列
-        @Override
-        public void report(S span) {
-          checkNotNull(span, "span");
-          metrics.incrementSpans(1);
-          byte[] next = encoder.encode(span);
-          int messageSizeOfNextSpan = sender.messageSizeInBytes(Collections.singletonList(next));
-          metrics.incrementSpanBytes(next.length);
-          if (closed.get() ||
-              // don't enqueue something larger than we can drain
-              messageSizeOfNextSpan > messageMaxBytes ||
-              !pending.offer(next)) {
-            metrics.incrementSpansDropped(1);
-          }
-        }
-
-        @Override
-        public final void flush() {
-          flush(new BufferNextMessage(sender, messageMaxBytes, 0));
-        }
-        //刷新队列，读取队列所有span放入 message buffer,并发送
-        void flush(BufferNextMessage bundler) {
-          if (closed.get()) throw new IllegalStateException("closed");
-         // 这里读取队列消息到bundler做了一次buffer.add()操作
-          pending.drainTo(bundler, bundler.remainingNanos());
-
-          // record after flushing reduces the amount of gauge events vs on doing this on report
-          metrics.updateQueuedSpans(pending.count);
-          metrics.updateQueuedBytes(pending.sizeInBytes);
-
-          if (!bundler.isReady()) return; // try to fill up the bundle
-
-          // Signal that we are about to send a message of a known size in bytes
-          metrics.incrementMessages();
-          metrics.incrementMessageBytes(bundler.sizeInBytes());
-          //获取下一组数据，并清空buffer，这里有一定开销
-          List<byte[]> nextMessage = bundler.drain();
-
-          // In failure case, we increment messages and spans dropped.
-          Callback failureCallback = sendSpansCallback(nextMessage.size());
-          try {
-            sender.sendSpans(nextMessage, failureCallback);
-          } catch (RuntimeException e) {
-            failureCallback.onError(e);
-            // Raise in case the sender was closed out-of-band.
-            if (e instanceof IllegalStateException) throw e;
-          }
-        }
-  }
-}
-```
+    ```
 
 
 # opencensus-website

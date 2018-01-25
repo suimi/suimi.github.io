@@ -337,12 +337,13 @@ categories: 监控
 
 ## 启动opencensus-website
 1. 获取代码
-```
+```shell
 git clone git@github.com:census-instrumentation/opencensus-website.git
 cd opencensus-website
 ```
 2. 启动服务
-```
+
+```shell
 $ hugo serve
 
 [K25lBuilding sites … [?25h
@@ -366,5 +367,5 @@ Press Ctrl+C to stop
 ```
 
 参考:
-- [PowerDesigner CDM LDM PDM OOM](http://blog.csdn.net/u010924834/article/details/48531669)
-- [PowerDesigner 系列文章](http://www.cnblogs.com/sandea/p/4318540.html)
+- [谷歌开源发布opencensus](http://www.atyun.com/15317_%E8%B0%B7%E6%AD%8C%E5%BC%80%E6%BA%90%E5%8F%91%E5%B8%83opencensus%E4%B8%80%E4%B8%AA%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE%E6%94%B6%E9%9B%86%E5%92%8C%E5%88%86%E5%B8%83%E5%BC%8F%E8%B7%9F%E8%B8%AA%E6%A1%86.html)
+- [Github](https://github.com/census-instrumentation/opencensus-java/blob/master/exporters/trace/zipkin/README.md)

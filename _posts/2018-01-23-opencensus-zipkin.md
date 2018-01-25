@@ -7,6 +7,9 @@ categories: 监控
 * TOC
 {:toc}
 
+# OpenCensus 介绍
+谷歌开源了OpenCensus，是一个厂商中立的开放源码库，用于度量收集和跟踪。OpenCensus的构建是为了增加最小的开销，并部署在整个团队中，特别是基于微服务的架构。
+
 # OpenCensus Zipkin Trace Exporter
 ## 启动spring boot zipkin(2.4.5)
 ```xml

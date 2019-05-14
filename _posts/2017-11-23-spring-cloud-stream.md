@@ -2,7 +2,7 @@
 layout: post
 title: Spring Cloud Stream
 tags: ["spring cloud","spring cloud stream"]
-categories: ["MQ","spring cloud"]
+categories: ["组件框架","消息中间件"]
 ---
 * TOC
 {:toc}

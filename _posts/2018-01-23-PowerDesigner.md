@@ -2,7 +2,7 @@
 layout: post
 title: PowerDesigner 使用记
 tags: PowerDesigner
-categories: ["Designer"]
+categories: 设计
 ---
 * TOC
 {:toc}

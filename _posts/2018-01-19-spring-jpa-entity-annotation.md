@@ -2,7 +2,7 @@
 layout: post
 title: Spring Boot + JPA Entity Annotation不生效问题记
 tags: ["spring data jpa"]
-categories: ["spring data"]
+categories: 问题排查
 ---
 * TOC
 {:toc}

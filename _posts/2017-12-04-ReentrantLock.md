@@ -1,8 +1,8 @@
 ---
 layout: post
 title: ReentrantLock
-tags: ReentrantLock
-categories: 并发编程
+tags: 并发编程 ReentrantLock
+categories: 编程语言
 ---
 * TOC
 {:toc}

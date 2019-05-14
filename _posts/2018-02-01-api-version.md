@@ -2,7 +2,7 @@
 layout: post
 title: 版本控制
 tags: api-version
-categories: spring
+categories: 组件框架
 ---
 * TOC
 {:toc}

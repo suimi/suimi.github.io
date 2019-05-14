@@ -2,7 +2,7 @@
 layout: post
 title: Spring Cloud Dataflow
 tags: ["spring cloud","spring cloud dataflow"]
-categories: ["MQ","spring cloud"]
+categories: ["消息中间件","组件框架"]
 ---
 * TOC
 {:toc}

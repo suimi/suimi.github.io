@@ -2,7 +2,7 @@
 layout: post
 title: Spring Cloud BUS
 tags: ["spring cloud","spring cloud bus"]
-categories: ["MQ","spring cloud"]
+categories: ["消息中间件","组件框架"]
 ---
 * TOC
 {:toc}

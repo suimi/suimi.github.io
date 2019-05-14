@@ -2,7 +2,7 @@
 layout: post
 title: OpenCensus Zipkin 源码解析
 tags: OpenCensus
-categories: 监控
+categories: 系统监控
 ---
 * TOC
 {:toc}

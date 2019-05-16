@@ -1,0 +1,74 @@
+---
+---
+// CSS Style Guide: http://codeguide.co/#css
+
+
+
+$scheme    : '{{ site.scheme | default: Muse }}';
+$variables : base $scheme custom;
+$mixins    : base $scheme custom;
+
+
+{% include _helper/config_map.html %}
+$jekyll-config-map : {{ config_map }};
+
+@function jekyll-config($key) {
+  @return map-get($jekyll-config-map, $key);
+}
+
+// Variables Layer
+// --------------------------------------------------
+@import "_variables/base";
+@import "_variables/{{ site.scheme | default: Muse }}";
+@import "_variables/custom";
+
+// Mixins Layer
+// --------------------------------------------------
+@import "_mixins/base";
+@import "_mixins/{{ site.scheme | default: Muse }}";
+@import "_mixins/custom";
+
+
+// Common Layer
+// --------------------------------------------------
+
+// Scaffolding
+@import "_common/scaffolding/scaffolding";
+
+// Layout
+@import "_common/outline/outline";
+
+// Components
+@import "_common/components/components";
+
+
+// Schemes Layer
+// --------------------------------------------------
+@import "_schemes/{{ site.scheme | default: Muse }}/index";
+
+
+// Custom Layer
+// --------------------------------------------------
+@import "_custom/custom";
+
+.header {
+  width: 96%;
+}
+.headband{
+  height: 1px;
+}
+
+.sidebar, .sidebar-inner.affix, .header-inner {
+  width: 20%;
+}
+.sidebar-inner,.sidebar-inner.affix-top{
+  width: 100%;
+}
+
+.container .main-inner {
+  width: 96%;
+}
+
+.content-wrap {
+  width: 78%;
+}

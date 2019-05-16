@@ -8,9 +8,9 @@ categories: solidity
 {:toc}
 
 #概述
-![chainlink oracle flow](/static/img/ChainLink-Oracle-flow.png)
+![chainlink oracle flow](https://github.com/suimi/suimi.github.io/blob/master/static/img/ChainLink-Oracle-flow.png?raw=true)
 #预言机调用过程
-![chainlink oracle steps](/static/img/chainlink-oracle-steps.png)
+![chainlink oracle steps](https://github.com/suimi/suimi.github.io/blob/master/static/img/chainlink-oracle-steps.png?raw=true)
 ## 智能合约调用预言机 
 ### 合约调用
 以`RopstenConsumer.sol.requestEthereumPrice()`为例，newRun初始化run时会把回调函数签名赋到callbackFunctionId

@@ -13,7 +13,7 @@ categories: 问题排查
  - hibernate： 5.2.12
 ## 问题描述
 在Entity的field上添加注解`@Enumerated`、`@Column`、`@Lob`不生效，但加在getter方法上有效,有用采用lombok, 写getter方法就多余了
-
+<!--more-->
 ## 解决过程
 查询大部分资料是说hibernate naming strategy调整导致的，但怎么调整都不对不生效，后来发现加在getter方法上发现有效。发现原来是Jpa访问策略默认是`AccessType.PROPERTY`
 

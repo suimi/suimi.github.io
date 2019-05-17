@@ -14,7 +14,7 @@ categories: ["消息中间件","组件框架"]
 - 默认为`<spring.application.name>.<active profiles>.<server.port>`
 - 该id将作为刷新时的destination使用(eg. `/bus/refresh?destination=customers:dev:9000`).
 - 事件origin id为实例application id, destination id支持匹配模式,也是与application id 匹配
-
+<!--more-->
 2. bus/refresh端点
 
     收到refresh时间后,发布`RefreshRemoteApplicationEvent`事件,指定事件源id,目标id(调用时可指定)

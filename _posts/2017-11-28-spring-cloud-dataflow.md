@@ -31,7 +31,7 @@ categories: ["消息中间件","组件框架"]
     <scope>import</scope>
 </dependency>
 ```
-
+<!--more-->
 # Data flow server
 
 1. pom.xml

@@ -10,7 +10,7 @@ categories: 组件框架
 # 概述
 在实际的应用开发过程中，接口版本往往是比较头疼的一个问题，如何控制接口的版本，本人根据spring custom request condition，定义了一个annotation `@ApiVersion`,来指定接口版本信息。
 在接口请求时，在request header中增加版本信息（eg:`api-version:2.1.0`）
-
+<!--more-->
 # 使用方法
 ## 注解`@ApiVersion` 和配置`app.api.version = @project.version@`
 
